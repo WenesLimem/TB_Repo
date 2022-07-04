@@ -35,6 +35,7 @@
     "express-prom-bundle": "^6.5.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.13.2",
+    "prom-client": "^14.0.1",
     "zipkin": "^0.22.0",
     "zipkin-context-cls": "^0.22.0",
     "zipkin-instrumentation-express": "^0.22.0",

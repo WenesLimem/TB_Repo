@@ -1,6 +1,7 @@
 const Cart = require("../models/Cart");
 // Primary CRUD for posts
 const client = require('prom-client');
+const http = require("http");
 // adding a register 
 let register = new client.Registry();
 
@@ -25,7 +26,6 @@ exports.getCart = async (req, res) => {
 exports.getCartContent = async (req, res) => {
   // this method will be called by user service whenever the user decides to buys the cart.
   nb_validated_carts.inc(1);
-
   // need cart content without user_id
   // basically we can retrieve them from previous request , but idk .
 };
@@ -53,7 +53,7 @@ exports.createCart = async (req, res) => {
     items_price: items_price,
     total:total
   };
-  Cart.create(cart).then((carts) => {
+  Cart.create(Cart).then((carts) => {
         res.status(200).send({ carts });})
       .catch((err) => res.status(404).json({ message: err.message }));
 };

@@ -86,7 +86,7 @@ app.get("/metrics",async (req,res)=>{
   res.setHeader('Content-type',register.contentType);
   res.end(await register.metrics());
 });
-app.get("/getCart/",tracer,cartsController.getCart);
+//app.get("/getCart",tracer,cartsController.getCart);
 
 // registring the metrics to export 
 register.registerMetric(op_conn_count);
