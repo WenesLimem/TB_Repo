@@ -1,5 +1,3 @@
-# Blog
+# Product 
 
-a Medium like personal blog in the making
-
-Note: this is only the backend
+Product microservice for the application 
