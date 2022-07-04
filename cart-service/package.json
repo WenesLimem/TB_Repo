@@ -22,6 +22,7 @@
     "nodemon": "^2.0.15"
   },
   "dependencies": {
+    "axios": "^0.27.2",
     "bcrypt": "^5.0.1",
     "body-parser": "^1.19.0",
     "checksum": "^1.0.0",
@@ -37,6 +38,7 @@
     "mongoose": "^5.13.2",
     "prom-client": "^14.0.1",
     "zipkin": "^0.22.0",
+    "zipkin-axios": "^0.2.4",
     "zipkin-context-cls": "^0.22.0",
     "zipkin-instrumentation-express": "^0.22.0",
     "zipkin-transport-http": "^0.22.0"

@@ -19,7 +19,7 @@ const nb_created_carts = new client.Counter({
 
 
 exports.getCart = async (req, res) => {
-  await Cart.findOne({ _id: req.params.id }, "-_id")
+  await Cart.findOne({ _id: req.params.id }, "_id")
     .then((posts) => res.status(200).json(posts))
     .catch((err) => res.status(404).json({ message: err.message }));
 };
@@ -36,24 +36,27 @@ exports.createCart = async (req, res) => {
   const items_id = req.body.items_ids;
   const items_quantity = req.body.quantities;
   const items_price = req.body.prices;
+
+
   // computing total
   // need to convert prices to numeric
   let total = 0
+  let x;
   for (let i = 0; i < items_price.length; i++) {
     // converting number to int then adding to table
     x = parseInt(items_price[i]);
     // adding number value to total
-    total+=x;
+    total += x;
   }
 
-  const Cart = {
+  const cart = {
     userId: userId,
     items_id: items_id,
     items_quantity: items_quantity,
     items_price: items_price,
     total:total
   };
-  Cart.create(Cart).then((carts) => {
+  Cart.create(cart).then((carts) => {
         res.status(200).send({ carts });})
       .catch((err) => res.status(404).json({ message: err.message }));
 };

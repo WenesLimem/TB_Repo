@@ -54,7 +54,7 @@ const metricsMiddleware = promBundle({
   includePath: true, 
   includeStatusCode: true, 
   includeUp: true,
-  customLabels: {project_name: 'user_service', project_type: 'custom_metrics'},
+  customLabels: {project_name: 'users_service', project_type: 'custom_metrics'},
   metricsType: Histogram,
   promClient: {
       collectDefaultMetrics: {
@@ -71,13 +71,27 @@ const op_conn_count = new client.Counter({
   help:"Number of opened connections"
 });
 // Wrap an instance of axios
-const zipkinAxios = wrapAxios(axios, { tracer, serviceName: 'user_services'});
+const zipkinAxios = wrapAxios(axios, { tracer, serviceName: 'users_service'});
 
 // Fetch data with HTTP-GET
-zipkinAxios.get('http://localhost:4002')
+// Checking products service health
+zipkinAxios.get('http://localhost:4002').then(function (response) {
+    tracer.recordMessage(response.toString())
+    console.log(response);
+})
+    .catch(function (error) {
+        console.log(error);
+    })
 
-app.use(zipkinMiddleware({tracer}));
-
+// Checking carts service health
+zipkinAxios.get('http://localhost:4003').then(function (response) {
+    tracer.recordMessage(response.toString())
+    console.log(response);
+})
+    .catch(function (error) {
+        tracer.recordMessage(error.toString())
+        console.log(error);
+    })
 // Listening obviously
 app.listen(4000,"0.0.0.0", function () {
   console.log("listening on 4000");
@@ -89,8 +103,8 @@ app.get("/", function (req, res) {
   res.sendFile(path.join(__dirname, "/", "index.html"));
 });
 
-app.post("/register", userController.registration);
-app.post("/login", userController.login);
+app.post("/register",userController.registration);
+app.post("/login",userController.login);
 app.post("/createOrder",orderController.createOrder)
 app.get("/details",userController.getDetails)
 

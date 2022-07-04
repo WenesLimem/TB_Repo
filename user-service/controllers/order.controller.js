@@ -9,12 +9,12 @@ const nb_of_orders = new client.Counter({
 });
 exports.createOrder = async (req, res, next) => {
     nb_of_orders.inc(1);
-    // auth required , need to check on this with hassen
+    // auth required ,
     // get cart service
     let data = {
         items_id: [1, 2, 3],
         payment_method: "card",
-        value: 152.56,
+        value: 98.56,
         order_date: "10.02.2022",
       }
   

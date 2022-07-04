@@ -6,6 +6,8 @@ const cors = require("cors");
 const compression = require("compression");
 const posts = require("./routing/product");
 const auth = require("./middleware/verifyAuth");
+const axios = require('axios');
+const wrapAxios = require('zipkin-axios');
 
 const fileUpload = require("express-fileupload");
 connect();
@@ -35,7 +37,7 @@ const tracer = new Tracer({
         jsonEncoder: JSON_V2
       })
     }),
-    localServiceName: "products service" // name of this application
+    localServiceName: "products_service" // name of this application
   });
 //---------------------------------------------------------//  
 // Prometheus Config 
@@ -47,7 +49,7 @@ const metricsMiddleware = promBundle({
   includePath: true, 
   includeStatusCode: true, 
   includeUp: true,
-  customLabels: {project_name: 'product_service', project_type: 'custom_metrics'},
+  customLabels: {project_name: 'products_service', project_type: 'custom_metrics'},
   metricsType: Histogram,
   promClient: {
       collectDefaultMetrics: {
@@ -78,6 +80,30 @@ register.setDefaultLabels({
 client.collectDefaultMetrics({register});
 
 app.use(zipkinMiddleware({tracer}));
+
+// Wrap an instance of axios
+const zipkinAxios = wrapAxios(axios, { tracer, serviceName: 'products_service'});
+// Fetch data with HTTP-GET
+
+// Fetch data with HTTP-GET
+// Checking users service health
+zipkinAxios.get('http://localhost:4000').then(function (response) {
+  tracer.recordMessage(response.toString())
+  console.log(response);
+})
+    .catch(function (error) {
+      console.log(error);
+    })
+
+// Checking users service health
+zipkinAxios.get('http://localhost:4000').then(function (response) {
+  tracer.recordMessage(response.toString())
+  console.log(response);
+})
+    .catch(function (error) {
+      tracer.recordMessage(error.toString())
+      console.log(error);
+    })
 
 app.use(compression());
 // Listening obviously

@@ -7,6 +7,8 @@ const compression = require("compression");
 const carts = require("./routing/cart");
 const auth = require("./middleware/verifyAuth");
 const cartsController = require("./controllers/carts.controller");
+const axios = require('axios');
+const wrapAxios = require('zipkin-axios');
 
 const fileUpload = require("express-fileupload");
 connect();
@@ -23,9 +25,9 @@ app.use(function (req, res, next) {
 app.use(fileUpload());
 
 //-------------------------------------------------// 
-// Zipkin Tracer config 
+// Zipkin Tracer config
+
 const { Tracer, BatchRecorder, jsonEncoder: {JSON_V2} } = require("zipkin");
-const zipkinMiddleware = require("zipkin-instrumentation-express").expressMiddleware;
 const {HttpLogger} = require('zipkin-transport-http');
 const CLSContext = require('zipkin-context-cls');
 const tracer = new Tracer({
@@ -36,20 +38,21 @@ const tracer = new Tracer({
         jsonEncoder: JSON_V2
       })
     }),
-    localServiceName: "carts service" // name of this application
+    localServiceName: "carts_service"// name of this application
+
   });
 //--------------------------------------------------//  
 // Prometheus Config 
 const promBundle = require("express-prom-bundle");
 const { Histogram } = require('prom-client');
 const client = require('prom-client');
-const {getCart} = require("./controllers/carts.controller");
+
 const metricsMiddleware = promBundle({
   includeMethod: true, 
   includePath: true, 
   includeStatusCode: true, 
   includeUp: true,
-  customLabels: {project_name: 'cart_service', project_type: 'custom_metrics'},
+  customLabels: {project_name: 'carts_service', project_type: 'custom_metrics'},
   metricsType: Histogram,
   promClient: {
       collectDefaultMetrics: {
@@ -65,11 +68,31 @@ const op_conn_count = new client.Counter({
   help:"Number of opened connections"
 });
 
-//call heros routing
-// Using compression in the middleware will help decrease requests body response size therefore makes the app faster
+//app.use(zipkinMiddleware({tracer}));
+// Wrap an instance of axios
+const zipkinAxios = wrapAxios(axios, { tracer, serviceName: 'carts_service'});
 
-app.use(zipkinMiddleware({tracer}));
-// adding a register 
+// Fetch data with HTTP-GET
+// Checking products service health
+zipkinAxios.get('http://localhost:4002').then(function (response) {
+    tracer.recordMessage(response.toString())
+    console.log(response);
+})
+    .catch(function (error) {
+        console.log(error);
+    })
+
+// Checking users service health
+zipkinAxios.get('http://localhost:4000').then(function (response) {
+    tracer.recordMessage(response.toString())
+    console.log(response);
+})
+    .catch(function (error) {
+        tracer.recordMessage(error.toString())
+        console.log(error);
+    })
+
+// adding a register for prometheus
 let register = new client.Registry();
 app.use(compression());
 // Listening obviously
@@ -81,12 +104,17 @@ app.get("/", function (req, res) {
   op_conn_count.inc(1);
   res.sendFile(path.join(__dirname, "/", "index.html"));
 });
+
 // metrics endpoint 
 app.get("/metrics",async (req,res)=>{
   res.setHeader('Content-type',register.contentType);
   res.end(await register.metrics());
 });
+// health endpoint for k8s
+app.get("/health",async(req,res_)=>{
+})
 //app.get("/getCart",tracer,cartsController.getCart);
-
+app.post("/createCart",cartsController.createCart)
+app.get("/getCart/",cartsController.getCart)
 // registring the metrics to export 
 register.registerMetric(op_conn_count);
