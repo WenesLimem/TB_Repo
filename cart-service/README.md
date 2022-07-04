@@ -1,5 +1,4 @@
-# Blog
+# Carts
 
-a Medium like personal blog in the making
-
+A cart microservice for the application
 Note: this is only the backend
