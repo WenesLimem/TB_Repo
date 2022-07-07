@@ -1,11 +1,9 @@
 const User = require("../models/users");
 const Order = require("../models/orders");
 const client = require("prom-client");
-
 const api = require('@opentelemetry/api');
 const tracer = require("../tracing")("users-service");
 const http = require("http");
-const {trace} = require("@opentelemetry/api");
 
 // adding a register
 let register = new client.Registry();
@@ -16,12 +14,10 @@ const nb_of_orders = new client.Counter({
 
 exports.createOrder = async (req, res) => {
     nb_of_orders.inc(1);
-    // calling the function handling the request
+    // invoking the function handling the request
     let cartContent = fetchCartContent();
-
     try {
         const result = Order.create(cartContent);
-
         nb_of_orders.inc(1);
         res.status(200).json({
             message: "Order added successfully !",
@@ -29,13 +25,10 @@ exports.createOrder = async (req, res) => {
         });
     } catch (error) {
         res.status(500).json({
-            message: "An error occurred",
+            message: "Something wrong occurred.",
             error: error.message,
         });
     }
-
-
-
 }
 
 async function fetchCartContent() {

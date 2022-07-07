@@ -53,29 +53,7 @@ const op_conn_count = new client.Counter({
 });
 
 
-// Fetch data with HTTP-GET
-// Checking products service health
-/*
-zipkinAxios.get('http://localhost:4002').then(function (response) {
-    tracer.recordMessage(response.toString())
-    console.log(response);
-})
-    .catch(function (error) {
-        console.log(error);
-    })
 
-// Checking carts service health
-*/
-/*
-zipkinAxios.get('http://localhost:4003').then(function (response) {
-    tracer.recordMessage(response.toString())
-    console.log(response);
-})
-    .catch(function (error) {
-        tracer.recordMessage(error.toString())
-        console.log(error);
-    })
-*/
 // Listening obviously
 app.listen(4000, "0.0.0.0", function () {
     console.log("listening on 4000");
@@ -91,6 +69,6 @@ app.post("/register", userController.registration);
 app.post("/login", userController.login);
 app.post("/createOrder", orderController.createOrder)
 app.get("/details", userController.getDetails)
-
+app.get("/getitemdetails/:id",userController.getItemDetails);
 // registring the metrics to export
 register.registerMetric(op_conn_count);

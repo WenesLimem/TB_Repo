@@ -4,10 +4,9 @@ const connect = require("./config/db");
 const app = express();
 const cors = require("cors");
 const compression = require("compression");
-
 const opentelemetry = require('@opentelemetry/api');
 const tracer = require("./tracing")("products-service");
-
+const Product = require("./controllers/products.controller");
 const fileUpload = require("express-fileupload");
 connect();
 app.use(express.urlencoded({extended: true}));
@@ -67,7 +66,7 @@ app.use(compression());
 app.listen(4002, function () {
     console.log("listening on 4002");
 });
-// Controllers routings
+// Controllers routing
 app.get("/", function (req, res) {
     const ctx = opentelemetry.context.active();
     const span = tracer.startSpan("backend-page", undefined, ctx)
@@ -80,6 +79,8 @@ app.get("/metrics", async (req, res) => {
     res.setHeader('Content-type', register.contentType);
     res.end(await register.metrics());
 });
+app.use("/createItem",Product.createItem);
+app.get("/getItem/:id",Product.getItem);
 
 
 

@@ -4,6 +4,7 @@ const tracer = require('../tracing')('carts-service');
 // Primary CRUD for posts
 const client = require('prom-client');
 const http = require("http");
+const {get} = require("mongoose");
 // adding a register 
 let register = new client.Registry();
 
@@ -21,12 +22,19 @@ const nb_created_carts = new client.Counter({
 // instrumented
 exports.getCart = async (req, res) => {
     // const ctx = opentelemetry.context.active();
-    //const span = tracer.startSpan("get-cart", undefined, ctx)
-    await Cart.findOne({_id: req.params.id}, "_id")
-        .then((posts) => res.status(200).json(posts))
-        .catch((err) => res.status(404).json({message: err.message}));
-    // span.end(Date.now());
+    const span = tracer.startSpan("get-cart-handler", undefined)
+    const cart_id = (await getCart(req.params.id));
+    res.status(200).json(cart_id);
+    span.end(Date.now());
 };
+
+async function getCart(cart_id) {
+    const span = tracer.startSpan("get-cart-from-db");
+    const cart = await Cart.findOne({_id: cart_id}, "_id")
+    span.addEvent("cart found")
+    span.end(Date.now())
+    return cart;
+}
 
 // not instrumented
 exports.getCartContent = async (req, res) => {
@@ -53,24 +61,33 @@ exports.getCartContent = async (req, res) => {
 
 // not instrumented
 exports.addItemToCart = async (req, res) => {
-
-    const item = getItem(req.body.id);
-    res.status(200).send(item);
-
+    // need to check if there is an existing cart to this user
+    let cart;
+    let item;
+    const span = tracer.startSpan("adding item to cart")
+    // if existing cart
+    item = getItem(req.params.itemid)
+    //cart = updateCartContent(req.params.cartid,req.params.itemid);
+    span.addEvent(item);
+    span.end(Date.now())
     //should add find a cart then add item to it .
+    res.status(200).send(cart);
 };
+
 
 //instrumented
 exports.createCart = async (req, res) => {
     const span = tracer.startSpan("create-cart")
+    const item = getItem(req.params.id)
+
     nb_created_carts.inc(1);
-    // Estimate Adult Reading Time
+    // Getting cart required information
     const userId = req.body.userId;
     const items_id = req.body.items_ids;
     const items_quantity = req.body.quantities;
     const items_price = req.body.prices;
-    // computing total
-    // need to convert prices to numeric
+    //Computing total
+    //Need to convert prices to numeric
     let total = 0
     let x;
     for (let i = 0; i < items_price.length; i++) {
@@ -87,43 +104,56 @@ exports.createCart = async (req, res) => {
         items_price: items_price,
         total: total
     };
-      span.addEvent("cart-creation")
+    span.addEvent("cart-creation")
     Cart.create(cart).then((carts) => {
-         const ctx = api.context.active();
+        const ctx = api.context.active();
         const childSpan = tracer.startSpan("db-create-cart", undefined, ctx);
         res.status(200).send({carts});
-          childSpan.addEvent("db entry created")
+        childSpan.addEvent("db entry created")
         childSpan.end(Date.now())
     })
         .catch((err) => res.status(404).json({message: err.message}));
 
-     span.end();
+    span.end();
 };
 
-async function getItem(id){
+async function getItem(id) {
     let itemInfo;
     const span = tracer.startSpan('fetch-item-info');
-    const path = "/getItem/"+id;
+    const path = "/getItem/" + id.toString();
     api.context.with(api.trace.setSpan(api.context.active(), span), () => {
         http.get({
             host: 'localhost',
             port: 4002,
-            path: 'path',
+            path: path,
         }, (response) => {
             const body = [];
-            response.on('data', (chunk) => body.push(chunk));
             itemInfo = body;
+            response.on('data', (chunk) => body.push(chunk));
             response.on('end', () => {
-                console.log(body.toString());
+
                 span.addEvent("Fetched item info ")
                 span.end();
             });
         });
     });
-
-
     return itemInfo || "empty item";
 }
+
+async function updateCartContent(cart_id, item_id) {
+    const op = Cart.updateOne({_id: {cart_id}},
+        {items_id: item_id}, function (err, docs) {
+            if (err) {
+                console.log(err)
+            } else {
+                console.log("Updated Docs : ", docs);
+            }
+        }
+    );
+    return op;
+
+}
+
 // not instrumented
 exports.updateCart = async (req, res) => {
     Cart.updateOne({_id: req.params.id}).exec(function (err, result) {

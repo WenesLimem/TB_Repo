@@ -9,4 +9,5 @@ router.post("/register", User.registration);
 router.post("/login",verifyToken,User.login);
 router.put("/createOrder",verifyToken,Order.createOrder)
 router.get("/getDetails", verifyToken,User.getDetails)
+router.get("getitemdetails/:id",User.getItemDetails)
 module.exports = router;

@@ -9,7 +9,8 @@ const { SimpleSpanProcessor } = require('@opentelemetry/sdk-trace-base');
 const { JaegerExporter } = require('@opentelemetry/exporter-jaeger');
 const { ZipkinExporter } = require('@opentelemetry/exporter-zipkin');
 const { HttpInstrumentation } = require('@opentelemetry/instrumentation-http');
-
+const { ExpressInstrumentation } = require("opentelemetry-instrumentation-express");
+const { MongoDBInstrumentation } = require("@opentelemetry/instrumentation-mongodb");
 const EXPORTER = process.env.EXPORTER || '';
 
 module.exports = (serviceName) => {
@@ -34,6 +35,8 @@ module.exports = (serviceName) => {
     registerInstrumentations({
         instrumentations: [
             new HttpInstrumentation(),
+            new ExpressInstrumentation(),
+            new MongoDBInstrumentation(),
         ],
     });
 
