@@ -22,8 +22,8 @@ module.exports = (serviceName) => {
             [SemanticResourceAttributes.SERVICE_NAME]: serviceName,
         }),
     });
+
     provider.addSpanProcessor(new SimpleSpanProcessor(exporter));
-    provider.addSpanProcessor(new SimpleSpanProcessor(new ConsoleSpanExporter()));
     provider.register();
     registerInstrumentations({
         instrumentations: [
