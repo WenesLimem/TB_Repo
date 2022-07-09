@@ -93,7 +93,7 @@ exports.getDetails = async (req, res, next) => {
     const email = req.body.email;
     const user = await User.findOne({email});
     res.status(200).json({
-        user,
+        user
     });
 };
 

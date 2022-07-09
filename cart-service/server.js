@@ -88,7 +88,7 @@ app.get("/health",async(req,res_)=>{
 app.post("/createCart",cartsController.createCart)
 app.post("/createCart/:id",cartsController.createCart)
 app.use("/getCart/:id",cartsController.getCart)
-app.use("/getCartContent",cartsController.getCartContent);
-app.use("/addItemToCart/:cartid/:itemid",cartsController.addItemToCart)
+app.use("/getCartContent/:id",cartsController.getCartContent);
+app.use("/addItemToCart/:userid",cartsController.addItemToCart)
 // registring the metrics to export 
 register.registerMetric(op_conn_count);

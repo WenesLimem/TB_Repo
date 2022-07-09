@@ -6,7 +6,7 @@ const User = new schema(
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     address: { type: String},
-    
+    cartId: { type : Number},
     orders: [{ type: String }]
   },
   {
