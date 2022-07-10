@@ -24,6 +24,7 @@ app.use(fileUpload());
 const promBundle = require("express-prom-bundle");
 const { Histogram } = require('prom-client');
 const client = require('prom-client');
+const Cart = require("./controllers/carts.controller");
 
 const metricsMiddleware = promBundle({
   includeMethod: true, 
@@ -89,6 +90,7 @@ app.post("/createCart",cartsController.createCart)
 app.post("/createCart/:id",cartsController.createCart)
 app.use("/getCart/:id",cartsController.getCart)
 app.use("/getCartContent/:id",cartsController.getCartContent);
-app.use("/addItemToCart/:userid",cartsController.addItemToCart)
+app.use("/addItemToCart/:userid",cartsController.addItemToCart);
+app.use("/emptyCart/:cartId",Cart.emptyCart);
 // registring the metrics to export 
 register.registerMetric(op_conn_count);

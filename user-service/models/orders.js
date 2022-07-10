@@ -3,7 +3,7 @@ const schema = mongoose.Schema;
 
 const Order = new schema(
   {
-    items_id: [],
+    content: {type:String},
     payment_method: {type:String},
     value: {type:Number},
     order_date: {type:Date},

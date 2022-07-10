@@ -4,18 +4,13 @@ const tracer = require('../tracing')('carts-service');
 // Primary CRUD for posts
 const client = require('prom-client');
 const http = require("http");
-const {get} = require("mongoose");
-const axios = require("axios")
-const {jsonEncoder} = require("zipkin");
-const {response} = require("express");
+
 // adding a register 
 let register = new client.Registry();
 
 
 //---------------------------------------------------------//
-const Orders = new client.Counter({
-    name: "orders", help: "Number of orders"
-})
+
 const CreatedCarts = new client.Counter({
     name: "created_carts", help: "Number of created carts"
 })
@@ -45,8 +40,7 @@ exports.getCartContent = async (req, res) => {
     span.addEvent('invoking handleRequest');
     // -------------------------------------------------------------//
     try {
-        Orders.inc(1);
-        const cart = await fetchCart(req.params.id);
+        const cart = await Cart.findById(req.params.id);
         res.status(200).json({
             data: cart,
         });
@@ -59,15 +53,13 @@ exports.getCartContent = async (req, res) => {
 
 
 exports.addItemToCart = async (req, res) => {
-
-    const span = tracer.startSpan('fetch-item-info');
+    const span = tracer.startSpan('add Item to cart');
     // params
     const customerId = req.params.userid;
     // body
     const itemId = req.body.id;
     const qty = Number.parseInt(req.body.qty);
     const cart = await Cart.findOne({customerId: customerId});
-  
     api.context.with(api.trace.setSpan(api.context.active(), span), async () => {
         await http.get({
                 host: 'localhost',
@@ -78,6 +70,9 @@ exports.addItemToCart = async (req, res) => {
                 const body = []
                 response.on('data', (chunk) => {
                     body.push(chunk);
+                    const  productDetails = JSON.parse(body);
+                    const unitPrice = productDetails.price;
+                    const itemId = productDetails._id;
                     // business logic
                     //------------------------------------------------------------------------------//
                     try {
@@ -90,37 +85,50 @@ exports.addItemToCart = async (req, res) => {
                         console.log("Looking for an active cart")
                         // existing cart
                         if (cart) {
-
                             console.log("A cart is found ! updating the cart ...")
                             // check if item exists
-                            console.log(cart.items.productId)
-                            const indexFound = cart.items.findIndex(item => item.productId === itemId);
-                           // console.log(itemId)
-
-                            console.log(indexFound)
+                            //console.log(cart.items.productId)
+                            const indexFound = cart.items.findIndex(item => item.productId.equals(itemId));
                             // check if item exists in cart, then we just update quantity, price, total
                             if (indexFound !== -1) {
+                                console.log("Found item in cart, updating item info")
                                 cart.items[indexFound].quantity = cart.items[indexFound].quantity + qty;
-                                cart.items[indexFound].total = cart.items[indexFound].quantity * 12;
-                                cart.items[indexFound].price = 12;
+                                cart.items[indexFound].total = cart.items[indexFound].quantity * unitPrice;
+                                cart.items[indexFound].price = unitPrice;
                                 cart.subTotal = cart.items.map(item => item.total).reduce((acc, next) => acc + next);
-                            }else if (qty > 0) {
+                                cart.save(cart);
+                            } else if (qty > 0) {
                                 console.log("Add new item to cart")
                                 cart.items.push({
                                     productId: itemId,
                                     quantity: qty,
-                                    price: 23,
-                                    total: 23 * qty
+                                    price: unitPrice,
+                                    total: unitPrice * qty
                                 })
                                 cart.subTotal = cart.items.map(item => item.total).reduce((acc, next) => acc + next);
                                 cart.save(cart);
-
                             }
                         }
+                        // non exiting cart => we create a new one and add item to it
                         else {
-                            console.log("no cart found")
+                            console.log("No cart found, creating a new one and adding item to it")
+                            let total = qty*unitPrice;
+                            const cartData = {
+                                customerId: customerId,
+                                items: [{
+                                    productId: itemId,
+                                    price: unitPrice,
+                                    quantity: qty,
+                                    total: total
+
+                                }],
+                                subTotal: total
+                            }
+                            Cart.create(cartData);
+                            CreatedCarts.inc(100);
                         }
-                    } catch (err) {
+                    }
+                     catch (err) {
                         console.log(err);
                     }
                     //---------------------------------------------------------------------------//
@@ -129,7 +137,6 @@ exports.addItemToCart = async (req, res) => {
                     span.end();
                 });
             })
-        //let data = await cart.updasave(cart);
         console.log(cart);
         res.status(200).json({
             type: "success",
@@ -138,51 +145,12 @@ exports.addItemToCart = async (req, res) => {
             //data: data
         })
     })
-   /*
-            // if user dosent have a cart , we create a  new cart
-            else if (!productDetails) {
-                let price = parseInt(productDetails.price);
-                let subtotal, total = price * qty;
-                const cartData = {
-                    customerId: customerId,
-                    items: [{
-                        productId: productId,
-                        price: price,
-                        quantity: qty,
-                        total: total
-
-                    }],
-                    subTotal: subtotal
-                }
-                cart = await createCartAndAddItem(cartData);
-                res.json(cart);
-            } else {
-                //do nothing
-            }
-        } catch (err) {
-            console.log(err)
-            res.status(400).json({
-                type: "Invalid",
-                msg: "Something Went Wrong",
-                err: err
-            })
-        }
-
-     */
-
 };
-
-async function createCartAndAddItem(cart) {
-    const span = tracer.startSpan("createandadditemtocart-handler")
-    const newItem = await Cart.create(cart);
-    span.end(Date.now());
-    return newItem
-}
 
 //instrumented
 exports.createCart = async (req, res) => {
     const span = tracer.startSpan("create-cart")
-    CreatedCarts.inc(1);
+    CreatedCarts.inc(100);
     // Getting cart required information
     const userId = req.body.userId;
     const cart = {customerId: userId};
@@ -198,43 +166,6 @@ exports.createCart = async (req, res) => {
     span.end();
 };
 
-function getItemSpan(id) {
-    const span = tracer.startSpan('fetch-item-info');
-    const path = "http://localhost:4002/getItem/" + id.toString();
-    const body = [];
-    api.context.with(api.trace.setSpan(api.context.active(), span), async () => {
-        const {data: response} = await http.get({
-                host: 'localhost',
-                port: 4002,
-                path: '/getItem/' + id,
-            },
-            (response) => {
-                response.on('data', (chunk) => {
-                    body.push(chunk);
-                    console.log("body from getItem():", body.toString())
-                });
-                response.on('end', () => {
-                    span.end();
-
-                });
-            })
-
-
-    })
-}
-
-async function updateCartContent(cart_id, item_id) {
-    const op = Cart.updateOne({_id: {cart_id}}, {items_id: item_id}, function (err, docs) {
-        if (err) {
-            console.log(err)
-        } else {
-            console.log("Updated Docs : ", docs);
-        }
-    });
-    return op;
-
-}
-
 // not instrumented
 exports.updateCart = async (req, res) => {
     Cart.updateOne({_id: req.params.id}).exec(function (err, result) {
@@ -244,17 +175,41 @@ exports.updateCart = async (req, res) => {
         }
     });
 };
-
 // not instrumented
 exports.deleteCart = async (req, res) => {
     Cart.deleteOne({_id: req.params.id})
         .then(() => res.status(200).send({success: true}))
         .catch((err) => res.status(404).json({message: err.message}));
 };
-
+// instrumented
+exports.emptyCart = async (req, res) => {
+    const cartId = req.params.cartId;
+    const span = tracer.startSpan("empty-cart-handler")
+    try {
+        let cart = await Cart.findById(cartId);
+        cart.items = [];
+        cart.subTotal = 0
+        let data = await cart.save();
+        span.addEvent("saving data to db")
+        res.status(200).json({
+            type: "success",
+            mgs: "Cart Has been emptied",
+            data: data
+        })
+        span.end(Date.now())
+    } catch (err) {
+        console.log(err)
+        res.status(400).json({
+            type: "Invalid",
+            msg: "Something Went Wrong",
+            err: err
+        })
+        span.addEvent("Something went wrong while connecting to the db").end(Date.now());
+    }
+}
 // Metrics registration
 
-register.registerMetric(Orders);
+
 register.registerMetric(CreatedCarts)
 
 // Metrics labels

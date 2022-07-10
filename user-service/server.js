@@ -67,7 +67,7 @@ app.get("/", function (req, res) {
 
 app.post("/register", userController.registration);
 app.post("/login", userController.login);
-app.post("/createOrder", orderController.createOrder)
+app.post("/createOrder/:cartid/:uid", orderController.createOrder)
 app.get("/details", userController.getDetails)
 app.get("/getitemdetails/:id",userController.getItemDetails);
 // registring the metrics to export

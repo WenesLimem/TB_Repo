@@ -12,22 +12,22 @@ const {
     createDecipheriv
 } = require('node:crypto');
 const http = require("http");
-//------------------------------------------------//
+
 // metrics to export
-const nb_active_users = new client.Counter({
-    name: "nb_active_users",
+const active_users = new client.Counter({
+    name: "active_users",
     help: "Number of active users",
 });
-const nb_of_users = new client.Counter({
-    name: "nb_of_users",
-    help: "Number of registred users",
+const users = new client.Counter({
+    name: "users",
+    help: "Number of registered users",
 });
-//-----------------------------------------------//
+
 
 require("dotenv").config();
 //instrumented
 exports.registration = (req, res) => {
-    nb_of_users.inc(1);
+    users.inc(100);
     const {email, password} = req.body;
     const span = tracer.startSpan("registerUser-handler", undefined)
     User.findOne({email}).then((user) => {
@@ -60,7 +60,7 @@ exports.registration = (req, res) => {
 }
 // non instrumented
 exports.login = async (req, res, next) => {
-    nb_active_users.inc(1);
+    active_users.inc(100);
     const span = tracer.startSpan("login-handler")
     const {email, password} = req.body;
 
@@ -98,31 +98,51 @@ exports.getDetails = async (req, res, next) => {
 };
 
 exports.getItemDetails = async (req, res, next) => {
-    const id = req.params.id;
-    console.log(id);
+    const itemId = req.params.id;
     const span = tracer.startSpan('fetch-item-info');
-    const path = "/getItem/" + id.toString();
+    const path = "/getItem/" + itemId.toString();
     api.context.with(api.trace.setSpan(api.context.active(), span), () => {
         http.get({
             host: 'localhost',
             port: 4002,
             path: path,
-        }, (res) => {
+        }, (response) => {
             const body = [];
-            res.on('data', (chunk) => body.push(chunk));
-            res.on('end', () => {
+            response.on('data', (chunk) => {
+                body.push(chunk)
+                let item = JSON.parse(body)
+                try {
+                    if (!body){
+                        return res.status(500).json({
+                            type: "Could not find item details",
+                            msg: "Invalid request"
+                        })
+                    }else {
+                        return res.status(200).json({
+                            type:"Found item",
+                            item: item
+                        })
+                    }
+
+
+                }
+                catch (err){
+
+                }
+            });
+            response.on('end', () => {
                 span.addEvent("Fetched item info ")
                 span.end();
             });
         });
-        res.send();
+
     });
     res.status(200);
 };
 
 
-register.registerMetric(nb_active_users);
-register.registerMetric(nb_of_users);
+register.registerMetric(active_users);
+register.registerMetric(users);
 // labelizing it
 register.setDefaultLabels({
     app: "users-api",
