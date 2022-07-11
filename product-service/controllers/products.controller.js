@@ -2,9 +2,17 @@ const Product = require("../models/product");
 const api = require('@opentelemetry/api');
 const tracer = require('../tracing')('products-service');
 // Primary CRUD for posts
-
+const client = require('prom-client');
+let register = new client.Registry();
+const viewedItems = new client.Counter({
+    name: "viewed_item", help: "Number of viewed items"
+})
+const createdItems = new client.Counter({
+    name: "created_item", help: "Number of created items"
+})
 exports.getItem = async (req, res) => {
     // starting span
+    viewedItems.inc(100);
     const currentSpan = api.trace.getSpan(api.context.active());
     console.log(`traceId: ${currentSpan.spanContext().traceId}`);
     const span = tracer.startSpan('getIem-handler', {kind: 1});
@@ -21,6 +29,7 @@ exports.getItems = async (req, res) => {
 };
 exports.createItem = async (req, res) => {
     const span = tracer.startSpan("create-item-request");
+    createdItems.inc(100);
     const item = {
         name: req.body.name,
         description: req.body.description,

@@ -14,6 +14,10 @@ let register = new client.Registry();
 const CreatedCarts = new client.Counter({
     name: "created_carts", help: "Number of created carts"
 })
+const EmptiedCarts = new client.Counter({
+    name:"emptied_carts",help:"Number of emptied carts"
+})
+
 
 // instrumented
 exports.getCart = async (req, res) => {
@@ -22,7 +26,6 @@ exports.getCart = async (req, res) => {
     res.status(200).json(cart_id);
     span.end(Date.now());
 };
-
 
 // Instrumented
 exports.getCartContent = async (req, res) => {
@@ -40,7 +43,7 @@ exports.getCartContent = async (req, res) => {
     span.addEvent('invoking handleRequest');
     // -------------------------------------------------------------//
     try {
-        const cart = await Cart.findById(req.params.id);
+        const cart = await Cart.findByIdAndDelete(req.params.id);
         res.status(200).json({
             data: cart,
         });
@@ -206,12 +209,10 @@ exports.emptyCart = async (req, res) => {
         })
         span.addEvent("Something went wrong while connecting to the db").end(Date.now());
     }
+    EmptiedCarts.inc(100)
 }
 // Metrics registration
-
-
 register.registerMetric(CreatedCarts)
-
 // Metrics labels
 register.setDefaultLabels({
     app: 'carts-api'

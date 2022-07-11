@@ -8,7 +8,7 @@ const orderController = require("./controllers/order.controller");
 const compression = require("compression");
 const fileUpload = require("express-fileupload");
 const client = require('prom-client');
-
+const auth = require("./middleware/verifyAuth");
 connect();
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
@@ -66,9 +66,11 @@ app.get("/", function (req, res) {
 });
 
 app.post("/register", userController.registration);
-app.post("/login", userController.login);
+app.post("/login" ,userController.login);
 app.post("/createOrder/:cartid/:uid", orderController.createOrder)
-app.get("/details", userController.getDetails)
+app.get("/account",userController.getDetails)
 app.get("/getitemdetails/:id",userController.getItemDetails);
-// registring the metrics to export
+app.put("/account",userController.updateUser);
+app.get("/health");
+// registering the metrics to export
 register.registerMetric(op_conn_count);
