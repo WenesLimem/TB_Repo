@@ -6,7 +6,7 @@ const tracer = require("../tracing")("users-service");
 const http = require("http");
 const {JAEGER_BAGGAGE_HEADER} = require("jaeger-client/dist/src/constants");
 
-// adding a register
+// adding a register for Prometheus
 let register = new client.Registry();
 const orders = new client.Counter({
     name: "orders",

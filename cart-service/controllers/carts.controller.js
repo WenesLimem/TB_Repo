@@ -22,16 +22,15 @@ const EmptiedCarts = new client.Counter({
 // instrumented
 exports.getCart = async (req, res) => {
     const span = tracer.startSpan("get-cart-handler", undefined)
-    const cart_id = await Cart.findById(req.params.id);
-    res.status(200).json(cart_id);
+    const cart_id = await Cart.findById(req.params.id).exec();
+
+    res.status(200).json({cart_id});
     span.end(Date.now());
 };
 
-// Instrumented
+// instrumented
 exports.getCartContent = async (req, res) => {
 
-    // trace block
-    //----------------------------------------------------------------//
     const currentSpan = api.trace.getSpan(api.context.active());
     // Display traceid in the terminal
     console.log(`Fetching cart from db , traceId: ${currentSpan.spanContext().traceId}`);
@@ -39,9 +38,7 @@ exports.getCartContent = async (req, res) => {
         kind: 1, // server
         attributes: {key: 'value'},
     });
-    // Annotate our span to capture metadata about the operation
     span.addEvent('invoking handleRequest');
-    // -------------------------------------------------------------//
     try {
         const cart = await Cart.findByIdAndDelete(req.params.id);
         res.status(200).json({
@@ -52,9 +49,9 @@ exports.getCartContent = async (req, res) => {
             error: err
         });
     }
-}
+};
 
-
+// instrumented
 exports.addItemToCart = async (req, res) => {
     const span = tracer.startSpan('add Item to cart');
     // params
@@ -168,22 +165,6 @@ exports.createCart = async (req, res) => {
         .catch((err) => res.status(404).json({message: err.message}));
     span.end();
 };
-
-// not instrumented
-exports.updateCart = async (req, res) => {
-    Cart.updateOne({_id: req.params.id}).exec(function (err, result) {
-        res.status(200).send({success: true});
-        if (err) {
-            return err;
-        }
-    });
-};
-// not instrumented
-exports.deleteCart = async (req, res) => {
-    Cart.deleteOne({_id: req.params.id})
-        .then(() => res.status(200).send({success: true}))
-        .catch((err) => res.status(404).json({message: err.message}));
-};
 // instrumented
 exports.emptyCart = async (req, res) => {
     const cartId = req.params.cartId;
@@ -210,7 +191,23 @@ exports.emptyCart = async (req, res) => {
         span.addEvent("Something went wrong while connecting to the db").end(Date.now());
     }
     EmptiedCarts.inc(100)
-}
+};
+// not instrumented
+exports.updateCart = async (req, res) => {
+    Cart.updateOne({_id: req.params.id}).exec(function (err, result) {
+        res.status(200).send({success: true});
+        if (err) {
+            return err;
+        }
+    });
+};
+// not instrumented
+exports.deleteCart = async (req, res) => {
+    Cart.deleteOne({_id: req.params.id})
+        .then(() => res.status(200).send({success: true}))
+        .catch((err) => res.status(404).json({message: err.message}));
+};
+
 // Metrics registration
 register.registerMetric(CreatedCarts)
 // Metrics labels
