@@ -1,0 +1,57 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EagleMind/ikeep-backend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EagleMind/ikeep-backend/issues"
+  },
+  "homepage": "https://github.com/EagleMind/ikeep-backend#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  },
+  "dependencies": {
+    "@opentelemetry/api": "^1.1.0",
+    "@opentelemetry/auto-instrumentations-node": "^0.31.0",
+    "@opentelemetry/context-async-hooks": "^1.3.1",
+    "@opentelemetry/exporter-jaeger": "^1.3.1",
+    "@opentelemetry/exporter-zipkin": "^1.4.0",
+    "@opentelemetry/resources": "^1.3.1",
+    "@opentelemetry/sdk-node": "^0.29.2",
+    "axios": "^0.27.2",
+    "bcrypt": "^5.0.1",
+    "body-parser": "^1.19.0",
+    "checksum": "^1.0.0",
+    "compression": "^1.7.4",
+    "config": "^3.3.6",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "dotenv": "^9.0.2",
+    "express": "^4.17.1",
+    "express-fileupload": "^1.3.1",
+    "express-prom-bundle": "^6.5.0",
+    "jaeger-client": "^3.19.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.13.2",
+    "node-fetch": "^3.2.6",
+    "opentelemetry-instrumentation-express": "^0.29.0",
+    "opentracing": "^0.14.7",
+    "prom-client": "^14.0.1",
+    "zipkin-axios": "^0.2.4",
+    "zipkin-context-cls": "^0.22.0",
+    "zipkin-instrumentation-express": "^0.22.0",
+    "zipkin-instrumentation-fetch": "^0.22.0",
+    "zipkin-js-instrumentation-axios": "^0.2.0"
+  }
+}
