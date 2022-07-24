@@ -62,7 +62,7 @@
 [Résumé publiable in english]
 
 ### Built With
-* [![NodeJS][NodeJs][https://nodejs.org/en/]]
+* [![Node][Node]][https://nodejs.org/en/]
 <!-- GETTING STARTED -->
 ## Getting Started
 
