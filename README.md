@@ -18,9 +18,6 @@
 
   <p align="center">
     <br />
-    <a href="https://github.com/WenesLimem/TB_Repo"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
     <a href="https://github.com/WenesLimem/TB_Repo">View Demo</a>
     ·
     <a href="https://github.com/WenesLimem/TB_Repo/issues">Report Bug</a>
