@@ -62,7 +62,8 @@
 [Résumé publiable in english]
 
 ### Built With
-* [![Node][Node]][https://nodejs.org/en/]
+* NodeJS : https://nodejs.org/en/
+* Express: https://expressjs.com/
 <!-- GETTING STARTED -->
 ## Getting Started
 
