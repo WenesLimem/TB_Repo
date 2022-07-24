@@ -18,7 +18,7 @@
 
   <p align="center">
     <br />
-    <a href="https://github.com/github_username/repo_name"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/WenesLimem/TB_Repo"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     <a href="https://github.com/WenesLimem/TB_Repo">View Demo</a>
