@@ -72,9 +72,9 @@ In a second part, two observable systems were presented and deployed. The first 
 ## Getting Started
 
 To get a local copy up and running, clone the repo on your computer using the following command. 
-    ```sh
-    git clone https://github.com/WenesLimem/TB_Repo
-    ```
+```sh
+git clone https://github.com/WenesLimem/TB_Repo
+```
     
 
 ### Prerequisites
