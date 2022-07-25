@@ -104,7 +104,7 @@ kubectl get pods -n sock-shop
 ### E-shop-minimal : 
 ##### Running the application using _npm_:
 _The example will just show how to run one service , the same steps will be repeated for each micro-service_
-
+* To start the app , we need to move to the root folder of the micro-service and then start it. 
 ```sh
 cd cart-service\
 npm start 
@@ -112,7 +112,8 @@ npm start
 You should be able to see the port the application is listening on the console output. 
 
 ##### Running the application using Docker 
-Images corresponding the the application's micro-services can be found [here](https://hub.docker.com/w3n3s). You can pull and run them.
+Images corresponding the the application's micro-services can be found [here](https://hub.docker.com/w3n3s). 
+* Pull and run containers from the images 
 
 ```sh
 docker pull w3n3s\carts
@@ -123,7 +124,7 @@ docker run -d -t w3n3s\carts -p 4003:8081
 docker run -d -t w3n3s\products -p 4002:8082
 docker run -d -t w3n3s\users -p 4000:8083
 ```
-To make sure the containers are up and running
+* To make sure the containers are up and running
 ```sh
 docker ps
 ```
