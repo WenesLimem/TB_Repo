@@ -60,7 +60,8 @@
 This repo contains all files related to Bachelor's Degree Project. 
 It contains two applications, deployment manfiests Kubernetes deplyoment, ready-to-use docker images. 
 
-The first application is Sock-shop. It a demonstration application for micro-services by excellence. More info here : !()[https://github.com/microservices-demo]. 
+The first application is [sock-shop](https://github.com/microservices-demo). It a demonstration application for micro-services by excellence. 
+</br> 
 To monitor the proper functioning of applications based on the microservices architecture and dedicated for cloud deployment, traditional tools  are insufficient to diagnose applications in case of failure.  
 </br>
 In the first part of this project, we analyzed the different types of architectures (monolithic and microservices), the Kubernetes container orchestrator, and different monitoring/logging tools. The majority of these tools are projects of the Cloud Native Computing Foundation. This part allowed the understanding and definition of a new concept called Observability. This new concept encompasses monitoring and logging, and adds to the latter two the collection of different metrics. </br>
