@@ -1,12 +1,5 @@
-<div id="top"></div>
-<!--
-*** Thanks for checking out the Best-README-Template. If you have a suggestion
-*** that would make this better, please fork the repo and create a pull request
-*** or simply open an issue with the tag "enhancement".
-*** Don't forget to give the project a star!
-*** Thanks again! Now go create something AMAZING! :D
--->
-
+<div id="top">
+</div>
 
 
 <!-- PROJECT LOGO -->
@@ -26,8 +19,6 @@
   </p>
 </div>
 
-
-
 <!-- TABLE OF CONTENTS -->
 <details>
   <summary>Table of Contents</summary>
@@ -46,8 +37,6 @@
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
@@ -68,10 +57,11 @@ In the first part of this project, we analyzed the different types of architectu
 In a second part, two observable systems were presented and deployed. The first system allowed us to test the observability tools in an environment that simulates a production application. On the other hand, the second system has been developed, presented and deployed in order to extend the observability layer from the infrastructure layer to the application layer using the same tools. These two systems allow us to conclude the effectiveness of the tools presented in the first part. 
 
 ### Built With
-* NodeJS : https://nodejs.org/en/
-* Express: https://expressjs.com/
-* Prometheus : https://prometheus.io/
-* Jaeger : https://jaegertracing.io/
+* [NodeJS](https://nodejs.org/en/)
+* [Express](https://expressjs.com/)
+* [Prometheus](https://prometheus.io/)
+* [Jaeger](https://jaegertracing.io/)
+* [Grafana](https://grafana.com/)
 
 <!-- GETTING STARTED -->
 ## Getting Started
@@ -89,6 +79,7 @@ git clone https://github.com/WenesLimem/TB_Repo
 * Kubernetes cluster 
 * Prometheus 
 * Jaeger 
+* Grafana
 
 ### Installation 
 
