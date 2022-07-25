@@ -90,7 +90,7 @@ There is multiple methods to run|deploy E-shop-minimal application. For Sock-sho
 ```sh
 kubetctl get pods 
 ```
-* Apply the full_weaveworks.yaml manifest found in sock-shop/ 
+* Apply  _full_weaveworks.yaml_ manifest found in sock-shop/ 
 ```sh
 kubectl apply -f full_weavesocks.yaml
 ``` 
@@ -101,5 +101,32 @@ _Usually it takes around 2 minutes to start all the containers in a local Docker
 kubectl get pods -n sock-shop 
 ```
 
+### E-shop-minimal : 
+##### Running the application using _npm_:
+_The example will just show how to run one service , the same steps will be repeated for each micro-service_
 
+```sh
+cd cart-service\
+npm start 
+```
+You should be able to see the port the application is listening on the console output. 
 
+##### Running the application using Docker 
+Images corresponding the the application's micro-services can be found [here](https://hub.docker.com/w3n3s). You can pull and run them.
+
+```sh
+docker pull w3n3s\carts
+docker pull w3n3s\products
+docker pull w3n3s\users
+
+docker run -d -t w3n3s\carts -p 4003:8081
+docker run -d -t w3n3s\products -p 4002:8082
+docker run -d -t w3n3s\users -p 4000:8083
+```
+To make sure the containers are up and running
+```sh
+docker ps
+```
+A list of the running containers should be seen on the console output. 
+
+##### Deploying the application to Kubernetes using the manfiests found in _K8s_Infra/_
