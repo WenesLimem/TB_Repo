@@ -136,7 +136,7 @@ A list of the running containers should be seen on the console output.
 ```sh
 kubetctl get pods 
 ```
-* Apply  _full_weaveworks.yaml_ manifest found in sock-shop/ 
+* Apply  _full_deploy.yaml
 ```sh
 kubectl apply -f full_deploy.yaml
 ``` 
