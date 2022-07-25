@@ -58,8 +58,9 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 This repo contains all files related to Bachelor's Degree Project. 
-It contains two applications and deployment manfiests for Kubernetes deplyoment. 
+It contains two applications, deployment manfiests Kubernetes deplyoment, ready-to-use docker images. 
 
+The first application is Sock-shop. It a demonstration application for micro-services by excellence. More info here : !()[https://github.com/microservices-demo]. 
 To monitor the proper functioning of applications based on the microservices architecture and dedicated for cloud deployment, traditional tools  are insufficient to diagnose applications in case of failure.  
 </br>
 In the first part of this project, we analyzed the different types of architectures (monolithic and microservices), the Kubernetes container orchestrator, and different monitoring/logging tools. The majority of these tools are projects of the Cloud Native Computing Foundation. This part allowed the understanding and definition of a new concept called Observability. This new concept encompasses monitoring and logging, and adds to the latter two the collection of different metrics. </br>
@@ -68,10 +69,13 @@ In a second part, two observable systems were presented and deployed. The first 
 ### Built With
 * NodeJS : https://nodejs.org/en/
 * Express: https://expressjs.com/
+* Prometheus : https://prometheus.io/
+* Jaeger : https://jaegertracing.io/
+
 <!-- GETTING STARTED -->
 ## Getting Started
 
-To get a local copy up and running, clone the repo on your computer using the following command. 
+To get a local copy, clone the repo on your computer using the following command. 
 ```sh
 git clone https://github.com/WenesLimem/TB_Repo
 ```
@@ -79,16 +83,15 @@ git clone https://github.com/WenesLimem/TB_Repo
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
 * npm
-  ```sh
-  npm install npm@latest -g
-  ```
+* Docker 
+* Kubernetes cluster 
+* Prometheus 
+* Jaeger 
 
-### Installation
+### Installation 
 
-
-
+The applications do not require any installation, we simply run the containers, apply K8s manfiests, or run the services using ```npm```.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -97,5 +100,6 @@ This is an example of how to list things you need to use the software and how to
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+The repo contains two applications. 
+
 
