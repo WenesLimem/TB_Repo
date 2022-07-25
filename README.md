@@ -9,14 +9,6 @@
 
 <h3 align="center">Observer</h3>
 
-  <p align="center">
-    <br />
-    <a href="https://github.com/WenesLimem/TB_Repo">View Demo</a>
-    ·
-    <a href="https://github.com/WenesLimem/TB_Repo/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/WenesLimem/TB_Repo/issues">Request Feature</a>
-  </p>
 </div>
 
 <!-- TABLE OF CONTENTS -->
@@ -91,7 +83,23 @@ The applications do not require any installation, we simply run the containers, 
 
 <!-- USAGE EXAMPLES -->
 ## Usage
+There is multiple methods to run|deploy E-shop-minimal application. For Sock-shop application, the only possibility is a deployment through Kubernetes manfiests. (Find more ways to run|deploy the application [here](https://github.com/microservices-demo)).  
 
-The repo contains two applications. 
+### Sock-shop : 
+* To deploy the application, make sure that Kubernetes is up & running 
+```sh
+kubetctl get pods 
+```
+* Apply the full_weaveworks.yaml manifest found in sock-shop/ 
+```sh
+kubectl apply -f full_weavesocks.yaml
+``` 
+_Usually it takes around 2 minutes to start all the containers in a local Docker-Desktop's Kubernetes._
+
+* Check the status of the pods. 
+```sh
+kubectl get pods -n sock-shop 
+```
+
 
 
