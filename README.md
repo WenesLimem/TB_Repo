@@ -102,7 +102,7 @@ kubectl get pods -n sock-shop
 ```
 
 ### E-shop-minimal : 
-##### Running the application using _npm_:
+#### Running the application using _npm_:
 _The example will just show how to run one service , the same steps will be repeated for each micro-service_
 * To start the app , we need to move to the root folder of the micro-service and then start it. 
 ```sh
@@ -111,7 +111,7 @@ npm start
 ```
 You should be able to see the port the application is listening on the console output. 
 
-##### Running the application using Docker 
+#### Running the application using Docker 
 Images corresponding the the application's micro-services can be found [here](https://hub.docker.com/w3n3s). 
 * Pull and run containers from the images 
 
@@ -130,4 +130,19 @@ docker ps
 ```
 A list of the running containers should be seen on the console output. 
 
-##### Deploying the application to Kubernetes using the manfiests found in _K8s_Infra/_
+#### Deploying the application to Kubernetes using the manfiests found in _K8s_Infra/_
+
+* To deploy the application, make sure that Kubernetes is up & running 
+```sh
+kubetctl get pods 
+```
+* Apply  _full_deploy.yaml_
+```sh
+kubectl apply -f full_deploy.yaml
+``` 
+_Usually it takes around 2 minutes to start all the containers in a local Docker-Desktop's Kubernetes._
+
+* Check the status of the pods. 
+```sh
+kubectl get pods -n e-shop 
+```
