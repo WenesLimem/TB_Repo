@@ -29,6 +29,11 @@
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
+      <ul>
+        <li><a href="#Sock-shop">Sock-Shop</li>
+        <li><a href="#E-shop-minimal">E-shop-minimal</li>
+        <li><a href="#Dashboards">Dashboards</li>
+      <ul>  
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
@@ -146,3 +151,27 @@ _Usually it takes around 2 minutes to start all the containers in a local Docker
 ```sh
 kubectl get pods -n e-shop 
 ```
+### Dashboards : 
+Each application has multiple configured ready to be deployed dashboards. These dashboards differ in the information they  represent. 
+#### Kubernetes dashboard : 
+  Kubernetes dashboard is a dashboard that represents the state,health and changes of deployments, pods, services and other Kuebrnetes entities. 
+  ##### Deployment guide 
+  [Windows environment] There is 3 Powershell script ready to deploy the dashboard, the service account, fetch the authetification token and register it. 
+  * Fetch the dashboard's manifests 
+    ```sh
+    ./deploy_dashboard.ps1 
+    ```
+  * Create the service account and bind it
+   ```sh
+   ./deploy_admin_sa.ps1 
+   ```
+  * Create and copy authetification token 
+  ```sh 
+  kubectl -n kubernetes-dashboard create token admin-user
+  ```
+  * Expose the UI with and access [here](http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy) :
+  ```sh 
+  kubectl proxy
+  ```
+  ![](assets/k8s_dashboard.png)
+  [Other Envrironment] check [here](https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/)
