@@ -30,9 +30,9 @@
     </li>
     <li><a href="#usage">Usage</a></li>
       <ul>
-        <li><a href="#Sock-shop">Sock-Shop</li>
-        <li><a href="#E-shop-minimal">E-shop-minimal</li>
-        <li><a href="#Dashboards">Dashboards</li>
+        <li><a href="###Sock-shop">Sock-Shop</li>
+        <li><a href="###E-shop-minimal">E-shop-minimal</li>
+        <li><a href="###Dashboards">Dashboards</li>
       <ul>  
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -175,3 +175,8 @@ Each application has multiple configured ready to be deployed dashboards. These 
   ```
   ![](assets/k8s_dashboard.png)
   [Other Envrironment] check [here](https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/)
+  
+  #### Prometheus dashboard  
+  #### Jaeger dashboard 
+  #### Datadog dashboard 
+  
