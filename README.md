@@ -29,6 +29,11 @@
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
+      <ul>
+        <li><a href="#Sock-shop">Sock-Shop</li>
+        <li><a href="#E-shop-minimal">E-shop-minimal</li>
+        <li><a href="#Dashboards">Dashboards</li>
+      <ul>  
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
@@ -146,3 +151,10 @@ _Usually it takes around 2 minutes to start all the containers in a local Docker
 ```sh
 kubectl get pods -n e-shop 
 ```
+### Dashboards : 
+Each application has multiple configured ready to be deployed dashboards. These dashboards differ in the information they  represent. 
+#### Kubernetes dashboard : 
+  What it is used for ? 
+  ##### Deployment guide 
+  * [Windows environment only]There is 3 Powershell script ready to deploy the dashboard, the service account, fetch the authetification token and register it. 
+  * [Others] check [here](https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/)
