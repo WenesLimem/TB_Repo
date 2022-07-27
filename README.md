@@ -179,8 +179,8 @@ Each application has multiple configured ready to be deployed dashboards. These 
   #### Prometheus dashboard
   Prometheus dashboard is a dashboard that allows us to query and visualize the scraped metrics. There is two ways to deploy Prometheus, whether as a service in a the OS , or as a container in kubernetes 
   ##### OS service : [Windows Environment]
-    * Download and install Prometheus as shows [here](https://prometheus.io/download/)
-    * To add the applications that needs to be scraped, we need to edit prometheus.yml as follows : [Example of adding a micro-service of e-shop-minimal]
+   * Download and install Prometheus as shows [here](https://prometheus.io/download/)
+   * To add the applications that needs to be scraped, we need to edit prometheus.yml as follows : [Example of adding a micro-service of e-shop-minimal]
   ```yaml
    # A scrape configuration containing exactly one endpoint to scrape:
 # Here it's Prometheus itself.
