@@ -202,9 +202,14 @@ scrape_configs:
       - targets: ["localhost:4000"]  
   ```
   * Run prometheus.exe 
-  ```
+  ```sh
   .\prometheus.exe 
   ```
-  #### Jaeger dashboard 
-  #### Datadog dashboard 
+  
+  ##### Kubernetes deployment 
+  To deploy Prometheus in Kubernetes, we need to use the manifests in the folder _prometheus_dashboard_ under _Sock-shop_.
+  * We can use the script _deploy_prometheus.ps1_. It will create a namespace, a cluster role, a config-map, and the prometheus deployment.
+  ```sh
+  .\deploy_prometheus.ps1  
+  ```
   
